@@ -26,8 +26,9 @@ public class ElencoAppuntamenti {
 	public ArrayList<Appuntamento> stampaAppuntamentiDatoMedico(int id) {
 		ArrayList<Appuntamento> ritorno = new ArrayList<>();
 		for (Appuntamento a : appuntamenti) {
-			if (a.getId() == id)
+			if (a.getId() == id){
 				ritorno.add(a);
+			}
 		}		
 		return ritorno;
 

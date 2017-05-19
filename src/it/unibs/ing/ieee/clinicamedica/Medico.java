@@ -20,7 +20,7 @@ public class Medico extends Persona{
 //	}
 
 	public String toString(){
-		return String.format("nome: %s\ncognome: %s\nid: %n\nanno di laurea: %s\nanno di assunzione: %s\n",this.getNome(),this.getCognome(),this.getId(),annoLaurea,annoAssunzione);
+		return String.format("nome: %s\ncognome: %s\nid: %d\nnanno di laurea: %s\nanno di assunzione: %s\n",this.getNome(),this.getCognome(),this.getId(),annoLaurea,annoAssunzione);
 	}
 
 	public GiornoLavorativo[] getGiorniLavorativi() {

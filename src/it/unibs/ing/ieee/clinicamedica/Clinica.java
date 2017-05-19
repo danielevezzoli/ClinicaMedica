@@ -80,26 +80,27 @@ public class Clinica implements Interfaccia{
 	//Stampa tutti gli appuntamenti del Medico Inserito
 	@Override
 	public ArrayList<Appuntamento> stampaAppuntamenti(int matricola) {
-		
-		return null;
+		return appuntamenti.stampaAppuntamentiDatoMedico(matricola);
 	}
 
 	@Override
 	public String stampaPazienti() {
-		// TODO Auto-generated method stub
-		return null;
+		StringBuffer ritorno = new StringBuffer();
+		for(Paziente p : pazienti){
+			System.out.println(p);
+			ritorno.append(p.getNome());
+		}
+		return ritorno.toString();
 	}
 
 	@Override
 	public ArrayList<Appuntamento> stampaAppuntamenti(GregorianCalendar dataInizio, GregorianCalendar dataFine) {
-		// TODO Auto-generated method stub
-		return null;
+		return appuntamenti.stampaAppuntamentiDatoInizioFine(dataInizio, dataFine);
 	}
 
 	@Override
 	public String stampaNumAppuntamenti(int matricola) {
-		// TODO Auto-generated method stub
-		return null;
+		return String.valueOf(appuntamenti.numAppuntamentiDatoMedico(matricola));
 	}
 
 	@Override

@@ -24,5 +24,9 @@ public class Paziente extends Persona{
 	public void setNumeroAppuntamenti(int numeroAppuntamenti) {
 		this.numeroAppuntamenti = numeroAppuntamenti;
 	}
+	
+	public String toString(){
+		return String.format("nome: %s\ncognome: %s\nid: %id\npriorita': %s\nnumero di appuntamenti: %d\n",this.getNome(),this.getCognome(),this.getId(),priorita,numeroAppuntamenti);
+	}
 
 }
