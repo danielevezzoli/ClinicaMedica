@@ -4,6 +4,22 @@ public class Ora implements Comparable<Ora>{
 	private int ora;
 	private int minuti;
 
+	public int getOra() {
+		return ora;
+	}
+
+	public void setOra(int ora) {
+		this.ora = ora;
+	}
+
+	public int getMinuti() {
+		return minuti;
+	}
+
+	public void setMinuti(int minuti) {
+		this.minuti = minuti;
+	}
+
 	public Ora(int _ora, int _minuti) {
 
 		if (ora < 0)

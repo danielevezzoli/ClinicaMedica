@@ -39,5 +39,9 @@ public class GiornoLavorativo {
 		orario[2] = iPom;
 		orario[3] = fPom;
 	}
+	
+	public String toString(){
+		return String.format("%d - %d \n %d - %d", orario[0],orario[1],orario[2],orario[3]);
+	}
 
 }
