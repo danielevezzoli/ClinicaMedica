@@ -1,5 +1,6 @@
 package it.unibs.ing.ieee.clinicamedica;
 
+import java.util.Calendar;
 import java.util.GregorianCalendar;
 
 public class Medico extends Persona{
@@ -13,6 +14,8 @@ public class Medico extends Persona{
 		super(_nome, _cognome);
 		annoLaurea = _annoLaurea;
 		annoAssunzione = _annoAssunzione;
+		
+		this.setId(this.hashCode());
 	}
 	
 //	public String stampaOrari(){
@@ -20,7 +23,7 @@ public class Medico extends Persona{
 //	}
 
 	public String toString(){
-		return String.format("nome: %s\ncognome: %s\nid: %d\nnanno di laurea: %s\nanno di assunzione: %s\n",this.getNome(),this.getCognome(),this.getId(),annoLaurea,annoAssunzione);
+		return String.format("nome: %s\ncognome: %s\nid: %d\nanno di laurea: %s\nanno di assunzione: %s\n",this.getNome(),this.getCognome(),this.getId(),annoLaurea.get(Calendar.YEAR),annoAssunzione.get(Calendar.YEAR));
 	}
 
 	public GiornoLavorativo[] getGiorniLavorativi() {
@@ -34,5 +37,7 @@ public class Medico extends Persona{
 	public GregorianCalendar getAnnoLaurea() {
 		return annoLaurea;
 	}
+	
+	
 	
 }

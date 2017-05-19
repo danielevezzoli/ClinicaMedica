@@ -7,6 +7,7 @@ public class Paziente extends Persona{
 	
 	public Paziente(String _nome, String _cognome) {
 		super(_nome, _cognome);
+		this.setId(this.hashCode());
 	}
 
 	public Allarme getPriorita() {

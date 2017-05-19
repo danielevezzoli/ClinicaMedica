@@ -53,6 +53,10 @@ public class ElencoAppuntamenti {
 
 	}
 
+	public ArrayList<Appuntamento> getAppuntamenti() {
+		return appuntamenti;
+	}
+
 	public int numAppuntamentiDatoMedico(int id) {
 		int c=0;
 		for (Appuntamento appuntamento : appuntamenti) {
