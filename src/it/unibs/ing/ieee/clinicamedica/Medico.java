@@ -1,19 +1,23 @@
 package it.unibs.ing.ieee.clinicamedica;
 
-public class Medico {
+import java.util.GregorianCalendar;
 
-	private Data annoLaurea;
-	private Data annoAssunzione;
-	private Collection<GiornoLavorativo> giorniLavorativi = new Collection<GiornoLavorativo>;
+public class Medico extends Persona{
+
+	private GregorianCalendar annoLaurea;
+	private GregorianCalendar annoAssunzione;
+	private GiornoLavorativo[] giorniLavorativi = new GiornoLavorativo[7];
 	private int numeroAppuntamenti;
 	
-	public Medico() {
-		 
+	public Medico(String _nome, String _cognome, GregorianCalendar _annoLaurea, GregorianCalendar _annoAssunzione) {
+		super(_nome, _cognome);
+		annoLaurea = _annoLaurea;
+		annoAssunzione = _annoAssunzione;
 	}
 	
-	public String stampaOrari(){
-		
-	}
+//	public String stampaOrari(){
+//		
+//	}
 
 	public String toString(){
 		return String.format(" ");
