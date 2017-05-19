@@ -9,11 +9,6 @@ public class Appuntamento {
 	private GregorianCalendar data;
 	private int priorita;
 	
-	
-	
-	
-	
-	
 	public Appuntamento(int id, Paziente paziente, Medico medico, GregorianCalendar data, int priorita) {
 		super();
 		this.id = id;
