@@ -41,7 +41,7 @@ public class GiornoLavorativo {
 	}
 	
 	public String toString(){
-		return String.format("%s : %s \n %s : %s", orario[0],orario[1],orario[2],orario[3]);
+		return String.format("Mattina: %s : %s \nPomeriggio/Sera:  %s : %s", orario[0],orario[1],orario[2],orario[3]);
 	}
 
 }

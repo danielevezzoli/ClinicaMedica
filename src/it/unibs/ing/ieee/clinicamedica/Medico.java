@@ -5,6 +5,7 @@ import java.util.GregorianCalendar;
 
 public class Medico extends Persona{
 
+
 	private GregorianCalendar annoLaurea;
 	private GregorianCalendar annoAssunzione;
 	private GiornoLavorativo[] giorniLavorativi = new GiornoLavorativo[7];
@@ -38,6 +39,13 @@ public class Medico extends Persona{
 		return annoLaurea;
 	}
 	
-	
+
+	public int getNumeroAppuntamenti() {
+		return numeroAppuntamenti;
+	}
+
+	public void setNumeroAppuntamenti(int numeroAppuntamenti) {
+		this.numeroAppuntamenti = numeroAppuntamenti;
+	}
 	
 }

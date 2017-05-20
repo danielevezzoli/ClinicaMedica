@@ -22,11 +22,17 @@ public class Ora implements Comparable<Ora>{
 
 	public Ora(int _ora, int _minuti) {
 
-		if (ora < 0)
-			ora = Math.abs(_ora);
+		if (_ora < 0)
+			_ora = Math.abs(_ora);
 
-		if (ora > 23)
-			ora %= 24;
+		if (_ora > 23)
+			_ora %= 24;
+		
+		if(_minuti < 0)
+			_minuti = Math.abs(_minuti);
+		
+		if(_minuti > 59)
+			_minuti %= 60;
 
 		this.ora = _ora;
 		this.minuti = _minuti;

@@ -26,7 +26,7 @@ public class ElencoAppuntamenti {
 	public ArrayList<Appuntamento> stampaAppuntamentiDatoMedico(int id) {
 		ArrayList<Appuntamento> ritorno = new ArrayList<>();
 		for (Appuntamento a : appuntamenti) {
-			if (a.getId() == id){
+			if (a.getMedico().getId() == id){
 				ritorno.add(a);
 			}
 		}		
@@ -37,19 +37,22 @@ public class ElencoAppuntamenti {
 	public ArrayList<Appuntamento> stampaAppuntamentiDatoInizioFine(GregorianCalendar inizio, GregorianCalendar fine) {
 		ArrayList<Appuntamento> ritorno = new ArrayList<>();
 		
-		ritorno = (ArrayList<Appuntamento>) appuntamenti.stream().filter(a -> a.getData().compareTo(fine) < 0 || a.getData().compareTo(inizio) > 0).collect(Collectors.toList());
+		for (Appuntamento a : appuntamenti) {
+			if(a.getData().compareTo(fine) < 0 || a.getData().compareTo(inizio) > 0) {
+				ritorno.add(a);
+			}
+		}
 		return ritorno;
-
 	}
 
-	public ArrayList<Paziente> stampaPazientiConAppuntamento() {
-		ArrayList<Paziente> ritorno = new ArrayList<>();
+	public void aggiornaNumeroAppuntamenti() {
+		for(Appuntamento a : appuntamenti)
+			a.getPaziente().setNumeroAppuntamenti(0);
 		
 		
 		for (Appuntamento a : appuntamenti) {
-			ritorno.add(a.getPaziente());
+			a.getPaziente().incrementaNumeroAppuntamenti();
 		}
-		return ritorno;
 
 	}
 
@@ -60,17 +63,24 @@ public class ElencoAppuntamenti {
 	public int numAppuntamentiDatoMedico(int id) {
 		int c=0;
 		for (Appuntamento appuntamento : appuntamenti) {
-			if(appuntamento.getMedico().getId() == id)
+			if(appuntamento.getMedico().getId() == id) {
 				c++;
+				appuntamento.getMedico().setNumeroAppuntamenti(c);
+			}
+				
 		}
+		
 		return c;
 	}
 	
 	public int numAppuntamentiDatoPaziente(int id) {
 		int c=0;
 		for (Appuntamento appuntamento : appuntamenti) {
-			if(appuntamento.getPaziente().getId() == id)
+			if(appuntamento.getPaziente().getId() == id) {
 				c++;
+				appuntamento.getPaziente().setNumeroAppuntamenti(c);
+			}
+				
 		}
 		return c;
 	}
