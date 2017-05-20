@@ -1,9 +1,13 @@
 package it.unibs.ing.ieee.clinicamedica;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.GregorianCalendar;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 import it.unibs.fp.mylib.InputDati;
 
@@ -14,8 +18,6 @@ public class Clinica implements Interfaccia {
 	private ElencoAppuntamenti appuntamenti;
 
 	public Clinica() {
-		// ArrayList<Paziente> pazienti = new ArrayList<>();
-		// ArrayList<Medico> medici = new ArrayList<Medico>();
 		appuntamenti = new ElencoAppuntamenti();
 	}
 
@@ -34,17 +36,16 @@ public class Clinica implements Interfaccia {
 	// check = id
 	@Override
 	public ArrayList<GiornoLavorativo> stampaOrari(int check) {
-		ArrayList<GiornoLavorativo> s = new ArrayList<GiornoLavorativo>();
-		for (Medico m : medici) {
-			if (check == m.getId()) {
-				for (GiornoLavorativo g : m.getGiorniLavorativi()) {
-					System.out.println(g);
-					s.add(g);
-				}
-			}
-			System.out.println("\n");
-		}
-		return s;
+
+		medici.stream()
+			  .filter(m -> m.getId() == check)
+			  .map(m -> Arrays.asList(m.getGiorniLavorativi()))
+			  .flatMap(gl -> gl.stream())
+			  .forEach(g -> System.out.println(g));
+
+		System.out.println(Arrays.asList(GiorniSettimana.values()));
+
+		return null;
 	}
 
 	// check = nome
@@ -69,8 +70,9 @@ public class Clinica implements Interfaccia {
 		ArrayList<GiornoLavorativo> s = new ArrayList<GiornoLavorativo>();
 		for (Medico m : medici) {
 			int i = 0;
-			// il +1 serve perche check year viene decrementato di uno per qualche strano motivo
-			if (check.get(Calendar.YEAR) +1 == (m.getAnnoLaurea().get(Calendar.YEAR))) {
+			// il +1 serve perche check.year viene decrementato di uno per
+			// qualche strano motivo
+			if (check.get(Calendar.YEAR) + 1 == (m.getAnnoLaurea().get(Calendar.YEAR))) {
 				for (GiornoLavorativo g : medici.get(i).getGiorniLavorativi()) {
 					System.out.println(g);
 					s.add(g);
@@ -85,17 +87,17 @@ public class Clinica implements Interfaccia {
 	@Override
 	public ArrayList<Appuntamento> stampaAppuntamenti(int matricola) {
 		ArrayList<Appuntamento> app = new ArrayList<>(appuntamenti.stampaAppuntamentiDatoMedico(matricola));
-				
-		for(Appuntamento b : app) {
+		Collections.sort(app);
+		for (Appuntamento b : app) {
 			System.out.println(b);
 		}
-		
+
 		return app;
-		
+
 	}
-	
+
 	public ArrayList<Appuntamento> stampaAppuntamenti(GregorianCalendar data) {
-		
+
 		GregorianCalendar min = new GregorianCalendar();
 		GregorianCalendar max = new GregorianCalendar();
 		min = max = data;
@@ -103,23 +105,22 @@ public class Clinica implements Interfaccia {
 		min.set(Calendar.MINUTE, 0);
 		max.set(Calendar.HOUR, 23);
 		max.set(Calendar.MINUTE, 59);
-				
+
 		ArrayList<Appuntamento> app = new ArrayList<>();
-		for(Appuntamento a : appuntamenti.getAppuntamenti()) {	
-			if(a.getData().compareTo(min) >=  0 || a.getData().compareTo(max) <=0 ) {
+		for (Appuntamento a : appuntamenti.getAppuntamenti()) {
+			if (a.getData().compareTo(min) >= 0 || a.getData().compareTo(max) <= 0) {
 				System.out.println(a);
 				app.add(a);
 			}
 		}
-		
+
 		return app;
-		
+
 	}
-	
-	
+
 	public Medico cercaMedicoDaId(int id) {
 		for (Medico medico : medici) {
-			if(medico.getId() == id)
+			if (medico.getId() == id)
 				return medico;
 		}
 		return null;
@@ -138,19 +139,21 @@ public class Clinica implements Interfaccia {
 
 	@Override
 	public ArrayList<Appuntamento> stampaAppuntamenti(GregorianCalendar dataInizio, GregorianCalendar dataFine) {
-		ArrayList<Appuntamento> app = new ArrayList<>(appuntamenti.stampaAppuntamentiDatoInizioFine(dataInizio, dataFine));
-		
+		ArrayList<Appuntamento> app = new ArrayList<>(
+				appuntamenti.stampaAppuntamentiDatoInizioFine(dataInizio, dataFine));
+
 		for (Appuntamento a : app) {
 			System.out.println(a);
 		}
-		
+
 		return app;
 	}
 
 	@Override
 	public String stampaNumAppuntamenti(int matricola) {
 		String str = String.valueOf(appuntamenti.numAppuntamentiDatoMedico(matricola));
-		System.out.println("Il dottor " + cercaMedicoDaId(matricola).getNome() + " " + cercaMedicoDaId(matricola).getCognome() + " ha " + str + " Appuntamenti");
+		System.out.println("Il dottor " + cercaMedicoDaId(matricola).getNome() + " "
+				+ cercaMedicoDaId(matricola).getCognome() + " ha " + str + " Appuntamenti");
 		return str;
 	}
 
@@ -168,13 +171,14 @@ public class Clinica implements Interfaccia {
 
 		Medico m = new Medico(nome, cognome, annoLaurea, annoAssunzione);
 
+		ArrayList<GiorniSettimana> giorni = (ArrayList<GiorniSettimana>) Arrays.asList(GiorniSettimana.values());
 		GiornoLavorativo[] gLav = new GiornoLavorativo[7];
 		Ora o1 = new Ora(10, 0);
 		Ora o2 = new Ora(12, 0);
 		Ora o3 = new Ora(14, 0);
 		Ora o4 = new Ora(20, 0);
 		for (int i = 0; i < gLav.length; i++) {
-			GiornoLavorativo g = new GiornoLavorativo(true, o1, o2, o3, o4);
+			GiornoLavorativo g = new GiornoLavorativo(true, o1, o2, o3, o4, giorni.get(i));
 			gLav[i] = g;
 		}
 
@@ -189,6 +193,7 @@ public class Clinica implements Interfaccia {
 		Medico m = new Medico(_nome, _cognome, _annoLaurea, _annoAssunzione);
 
 		medici.add(m);
+		List<GiorniSettimana> giorni = Arrays.asList(GiorniSettimana.values());
 
 		GiornoLavorativo[] gLav = new GiornoLavorativo[7];
 		Ora o1 = new Ora(10, 0);
@@ -196,21 +201,21 @@ public class Clinica implements Interfaccia {
 		Ora o3 = new Ora(14, 0);
 		Ora o4 = new Ora(20, 0);
 		for (int i = 0; i < gLav.length; i++) {
-			GiornoLavorativo g = new GiornoLavorativo(true, o1, o2, o3, o4);
+			GiornoLavorativo g = new GiornoLavorativo(true, o1, o2, o3, o4, giorni.get(i));
 			gLav[i] = g;
 		}
 
 		m.setGiorniLavorativi(gLav);
 
 		return m;
-		
+
 	}
 
 	public Paziente addPaziente(String nome, String cognome) {
 		Paziente p = new Paziente(nome, cognome);
-		
+
 		pazienti.add(p);
-		
+
 		return p;
 	}
 
@@ -222,86 +227,134 @@ public class Clinica implements Interfaccia {
 	}
 
 	public void addAppuntamento() {
-		Appuntamento app;
 		Medico m = null;
 		Paziente p = null;
 		GregorianCalendar data = null;
 
-		int idM = InputDati.leggiIntero("Inserisci l'id del medico: ");
+		
+		do {
+			int idM = InputDati.leggiIntero("Inserisci l'id del medico: ");
 
-		for (Medico medico : medici) {
-			if (idM == medico.getId()) {
-				m = medico;
+			for (Medico medico : medici) {
+				if (idM == medico.getId()) {
+					m = medico;
+				}
 			}
-		}
+			if (m == null)
+				System.out.println("Id sbagliato");
+		} while (m == null);
 
-		int idP = InputDati.leggiIntero("Inserisci l'id del paziente: ");
+		do {
+			int idP = InputDati.leggiIntero("Inserisci l'id del paziente: ");
 
-		for (Paziente paziente : pazienti) {
-			if (idP == paziente.getId()) {
-				p = paziente;
+			for (Paziente paziente : pazienti) {
+				if (idP == paziente.getId()) {
+					p = paziente;
+				}
 			}
+			if (p == null)
+				System.out.println("Id sbagliato");
+		} while (p == null);
+		
+		if(p.getPriorita() == Allarme.NERO){
+			System.out.println("Il paziente è morto, non puoi prenotare un appuntamento :(");
+			return;
 		}
-
+		
 		int annoA = InputDati.leggiInteroNonNegativo("Anno appuntamento: ");
 		int meseA = InputDati.leggiInteroNonNegativo("Mese appuntamento: ");
 		int giornoA = InputDati.leggiInteroNonNegativo("Giorno appuntamento: ");
-		int oraA = InputDati.leggiInteroNonNegativo("Ora appuntamento: ");
-		data = new GregorianCalendar(annoA, meseA, giornoA, oraA, 0);
+			
+		do {
+			int oraA = InputDati.leggiInteroNonNegativo("Ora appuntamento: ");
+			GregorianCalendar tmp = new GregorianCalendar(annoA, meseA, giornoA, oraA, 0);
+			int giornoDellaSettimana = tmp.get(Calendar.DAY_OF_WEEK);
+			GiornoLavorativo g = m.getGiorniLavorativi()[giornoDellaSettimana];
+			Ora[] ore = g.getOrario();
+			
+			if(oraA >= ore[0].getOra() && oraA <= ore[1].getOra() || oraA >= ore[2].getOra() && oraA <= ore[3].getOra())
+				data = new GregorianCalendar(annoA, meseA, giornoA, oraA, 0);
+			else
+				System.out.println("L'orario inserito non è corretto");
+		}while(data==null);
 		
-		int priorita = InputDati.leggiInteroNonNegativo("Priorità appuntamento: ");
 
-		
+		int priorita = InputDati.leggiIntero("Priorità appuntamento: ", 0, 10);
 
 		appuntamenti.addAppuntamento(new Appuntamento(p, m, data, priorita));
 	}
-	
+
 	public void addAppuntamento(Paziente paziente, Medico medico, GregorianCalendar data, int priorita) {
 		appuntamenti.addAppuntamento(new Appuntamento(paziente, medico, data, priorita));
 	}
-	
-	
+
 	public void stampaAppuntamenti() {
 		for (Appuntamento a : appuntamenti.getAppuntamenti()) {
 			System.out.println(a);
 		}
 	}
-	
+
 	public int cercaIdDatoNomeCognome(String nome, String cognome) {
-		for(Medico m : medici) {
-			if(m.getNome().equalsIgnoreCase(nome) && m.getCognome().equalsIgnoreCase(cognome))
+		for (Medico m : medici) {
+			if (m.getNome().equalsIgnoreCase(nome) && m.getCognome().equalsIgnoreCase(cognome))
 				return m.getId();
 		}
 		return 0;
 	}
-	
+
 	public void rimuoviAppuntamento() {
 		int id = InputDati.leggiIntero("Inserisci l'id dell'appuntamento: ");
-		for(Appuntamento a : appuntamenti.getAppuntamenti()) {
-			if(id == a.getId()) {
+		for (Appuntamento a : appuntamenti.getAppuntamenti()) {
+			if (id == a.getId()) {
 				appuntamenti.removeAppuntamento(a);
 				System.out.println("Rimosso :D");
 				break;
 			}
 		}
 	}
-	
-	public ArrayList<Paziente> ordinaPazientiPerNumeroAppuntamenti() {
+
+	public void ordinaPazientiPerNumeroAppuntamenti() {
 		appuntamenti.aggiornaNumeroAppuntamenti();
-		ArrayList<Paziente> tmp = new ArrayList<>(pazienti);
-		for(Paziente p : tmp)
-			if(p.getNumeroAppuntamenti() == 0)
-				tmp.remove(p);
-		
-		Collections.sort(tmp);
-		for(Paziente p : tmp)
-			System.out.println(p);
-//		stampaPazienti();
-		return pazienti;
+
+		// IT'S STREAM TIMEEEE
+		/**
+		 * Breve spiegazione
+		 * Creo uno stream di pazienti e ci applico un filtro
+		 * secondo il quale seleziono solo i pazienti con appuntamenti (getNumApp > 0).
+		 * Li riordino secondo il maggior numero di appuntamenti e
+		 * infine li raggruppo per numero di appuntamenti
+		 * 
+		 * poi stampo
+		 */
+		Map<Integer, List<Paziente>> map = pazienti.stream()
+				.filter(p -> p.getNumeroAppuntamenti() > 0)
+				.sorted()
+				.collect(Collectors.groupingBy(p -> p.getNumeroAppuntamenti()));
+
+		map.forEach((k, v) -> System.out.printf("Numero appuntamenti: %d %n%s%n%n%n", k, v));
+
 	}
 
 	@Override
 	public void getTime() {
+
+	}
+	
+	
+	/**
+	 * Breve spiegazione
+	 * Creo uno stream di appuntamenti e ci applico un filtro
+	 * per selezionare il paziente con un certo id
+	 * riordino gli appuntamenti secondo la priorità ( secondo la data sono già ordinati )
+	 * infine stampo
+	 */
+	public void stampaAppuntamentiPazientePerUrgenza(int id) {
+		ArrayList<Appuntamento> tmp = new ArrayList<>(appuntamenti.getAppuntamenti());
+
+		tmp.stream()
+		   .filter(p -> p.getPaziente().getId() == id)
+		   .sorted((a1, a2) -> -Integer.compare(a1.getPriorita(), a2.getPriorita()))
+		   .forEach(System.out::println);
 
 	}
 

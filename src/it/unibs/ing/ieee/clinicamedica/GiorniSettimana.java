@@ -8,4 +8,7 @@ public enum GiorniSettimana {
 	VEN,
 	SAB,
 	DOM;
+	
+
+	
 }

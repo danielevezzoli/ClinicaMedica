@@ -24,8 +24,9 @@ public class MainClass {
 		clinica.addPaziente("Gianmaria", "Pola");
 		Paziente p1 = clinica.addPaziente("Aldo", "Zanolla");
 
-		clinica.addAppuntamento(p1, m1, new GregorianCalendar(1980, 2, 4, 14, 0), 8);
 		clinica.addAppuntamento(p1, m1, new GregorianCalendar(1980, 5, 26, 10, 30), 1);
+		clinica.addAppuntamento(p1, m1, new GregorianCalendar(1980, 2, 4, 14, 0), 8);
+
 
 		while (!esci) {
 			switch (menu.scegli()) {
@@ -70,6 +71,7 @@ public class MainClass {
 				clinica.stampaNumAppuntamenti(589431969);
 				break;
 			case 14:
+				clinica.stampaAppuntamentiPazientePerUrgenza(460141958);
 				break;
 			case 15:
 				clinica.stampaOrari(new GregorianCalendar(InputDati.leggiInteroNonNegativo("Inserisci l'anno di laurea: "),0,0));
