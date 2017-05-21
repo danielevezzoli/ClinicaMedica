@@ -1,10 +1,12 @@
 package it.unibs.ing.ieee.clinicamedica;
 
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.GregorianCalendar;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -16,6 +18,8 @@ public class Clinica implements Interfaccia {
 	private ArrayList<Paziente> pazienti = new ArrayList<>();
 	private ArrayList<Medico> medici = new ArrayList<Medico>();
 	private ElencoAppuntamenti appuntamenti;
+	
+	private LinkedList<String> timestamps = new LinkedList<>();
 
 	public Clinica() {
 		appuntamenti = new ElencoAppuntamenti();
@@ -37,11 +41,8 @@ public class Clinica implements Interfaccia {
 	@Override
 	public ArrayList<GiornoLavorativo> stampaOrari(int check) {
 
-		medici.stream()
-			  .filter(m -> m.getId() == check)
-			  .map(m -> Arrays.asList(m.getGiorniLavorativi()))
-			  .flatMap(gl -> gl.stream())
-			  .forEach(g -> System.out.println(g));
+		medici.stream().filter(m -> m.getId() == check).map(m -> Arrays.asList(m.getGiorniLavorativi()))
+				.flatMap(gl -> gl.stream()).forEach(g -> System.out.println(g));
 
 		System.out.println(Arrays.asList(GiorniSettimana.values()));
 
@@ -97,10 +98,11 @@ public class Clinica implements Interfaccia {
 	}
 
 	public ArrayList<Appuntamento> stampaAppuntamenti(GregorianCalendar data) {
-
+		// Non funziona
 		GregorianCalendar min = new GregorianCalendar();
 		GregorianCalendar max = new GregorianCalendar();
-		min = max = data;
+		min = data;
+		max = data;
 		min.set(Calendar.HOUR, 0);
 		min.set(Calendar.MINUTE, 0);
 		max.set(Calendar.HOUR, 23);
@@ -108,7 +110,7 @@ public class Clinica implements Interfaccia {
 
 		ArrayList<Appuntamento> app = new ArrayList<>();
 		for (Appuntamento a : appuntamenti.getAppuntamenti()) {
-			if (a.getData().compareTo(min) >= 0 || a.getData().compareTo(max) <= 0) {
+			if (a.getData().compareTo(min) >= 0 && a.getData().compareTo(max) <= 0) {
 				System.out.println(a);
 				app.add(a);
 			}
@@ -231,7 +233,6 @@ public class Clinica implements Interfaccia {
 		Paziente p = null;
 		GregorianCalendar data = null;
 
-		
 		do {
 			int idM = InputDati.leggiIntero("Inserisci l'id del medico: ");
 
@@ -255,29 +256,29 @@ public class Clinica implements Interfaccia {
 			if (p == null)
 				System.out.println("Id sbagliato");
 		} while (p == null);
-		
-		if(p.getPriorita() == Allarme.NERO){
+
+		if (p.getPriorita() == Allarme.NERO) {
 			System.out.println("Il paziente è morto, non puoi prenotare un appuntamento :(");
 			return;
 		}
-		
+
 		int annoA = InputDati.leggiInteroNonNegativo("Anno appuntamento: ");
 		int meseA = InputDati.leggiInteroNonNegativo("Mese appuntamento: ");
 		int giornoA = InputDati.leggiInteroNonNegativo("Giorno appuntamento: ");
-			
+
 		do {
 			int oraA = InputDati.leggiInteroNonNegativo("Ora appuntamento: ");
 			GregorianCalendar tmp = new GregorianCalendar(annoA, meseA, giornoA, oraA, 0);
 			int giornoDellaSettimana = tmp.get(Calendar.DAY_OF_WEEK);
 			GiornoLavorativo g = m.getGiorniLavorativi()[giornoDellaSettimana];
 			Ora[] ore = g.getOrario();
-			
-			if(oraA >= ore[0].getOra() && oraA <= ore[1].getOra() || oraA >= ore[2].getOra() && oraA <= ore[3].getOra())
+
+			if (oraA >= ore[0].getOra() && oraA <= ore[1].getOra()
+					|| oraA >= ore[2].getOra() && oraA <= ore[3].getOra())
 				data = new GregorianCalendar(annoA, meseA, giornoA, oraA, 0);
 			else
 				System.out.println("L'orario inserito non è corretto");
-		}while(data==null);
-		
+		} while (data == null);
 
 		int priorita = InputDati.leggiIntero("Priorità appuntamento: ", 0, 10);
 
@@ -318,11 +319,10 @@ public class Clinica implements Interfaccia {
 
 		// IT'S STREAM TIMEEEE
 		/**
-		 * Breve spiegazione
-		 * Creo uno stream di pazienti e ci applico un filtro
-		 * secondo il quale seleziono solo i pazienti con appuntamenti (getNumApp > 0).
-		 * Li riordino secondo il maggior numero di appuntamenti e
-		 * infine li raggruppo per numero di appuntamenti
+		 * Breve spiegazione Creo uno stream di pazienti e ci applico un filtro
+		 * secondo il quale seleziono solo i pazienti con appuntamenti
+		 * (getNumApp > 0). Li riordino secondo il maggior numero di
+		 * appuntamenti e infine li raggruppo per numero di appuntamenti
 		 * 
 		 * poi stampo
 		 */
@@ -335,18 +335,10 @@ public class Clinica implements Interfaccia {
 
 	}
 
-	@Override
-	public void getTime() {
-
-	}
-	
-	
 	/**
-	 * Breve spiegazione
-	 * Creo uno stream di appuntamenti e ci applico un filtro
-	 * per selezionare il paziente con un certo id
-	 * riordino gli appuntamenti secondo la priorità ( secondo la data sono già ordinati )
-	 * infine stampo
+	 * Breve spiegazione Creo uno stream di appuntamenti e ci applico un filtro
+	 * per selezionare il paziente con un certo id riordino gli appuntamenti
+	 * secondo la priorità ( secondo la data sono già ordinati ) infine stampo
 	 */
 	public void stampaAppuntamentiPazientePerUrgenza(int id) {
 		ArrayList<Appuntamento> tmp = new ArrayList<>(appuntamenti.getAppuntamenti());
@@ -354,7 +346,31 @@ public class Clinica implements Interfaccia {
 		tmp.stream()
 		   .filter(p -> p.getPaziente().getId() == id)
 		   .sorted((a1, a2) -> -Integer.compare(a1.getPriorita(), a2.getPriorita()))
-		   .forEach(System.out::println);
+	       .forEach(System.out::println);
+
+	}
+
+	@Override
+	public void getTime() {
+		timestamps.add(String.valueOf(Instant.now().toEpochMilli()));
+	}
+	
+	
+	public double diffDouble(String t1, String t2) {
+		return Double.parseDouble(t1) - Double.parseDouble(t2);
+	}
+
+	/**
+	 * Fa la differenza tra il 1 e 2, 3 e 4, ...
+	 * Non avrebbe nessun significato calcolare la differenza tra 2 e 3 
+	 * sarebbe il tempo che l'utente seleziona un opzione del menu
+	 * (vedi main per capire meglio)
+	 */
+	public void printTime() {
+		for(int i=0; i<timestamps.size(); i+=2) {
+			System.out.println(diffDouble(timestamps.get(i+1), timestamps.get(i)));
+		}
+
 
 	}
 
