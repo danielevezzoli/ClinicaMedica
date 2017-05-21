@@ -40,7 +40,7 @@ public class Ora implements Comparable<Ora>{
 
 	@Override
 	public String toString() {
-		return String.format("%d:%d", ora, minuti);
+		return String.format("%02d:%02d", ora, minuti);
 	}
 	
 	@Override

@@ -41,47 +41,35 @@ public class Clinica implements Interfaccia {
 	@Override
 	public ArrayList<GiornoLavorativo> stampaOrari(int check) {
 
-		medici.stream().filter(m -> m.getId() == check).map(m -> Arrays.asList(m.getGiorniLavorativi()))
-				.flatMap(gl -> gl.stream()).forEach(g -> System.out.println(g));
+		List<GiornoLavorativo> giorni = medici.stream()
+			  .filter(m -> m.getId() == check)
+			  .map(m -> Arrays.asList(m.getGiorniLavorativi()))
+			  .flatMap(gl -> gl.stream())
+			  .filter(g-> g.isLavoro() == true)
+			  .collect(Collectors.toList());
+		
+			  giorni.forEach(g -> System.out.println(g));
 
-		System.out.println(Arrays.asList(GiorniSettimana.values()));
-
-		return null;
+		return (ArrayList<GiornoLavorativo>) giorni;
 	}
 
 	// check = nome
-	public ArrayList<GiornoLavorativo> stampaOrari(String check) {
-		ArrayList<GiornoLavorativo> s = new ArrayList<GiornoLavorativo>();
-		for (Medico m : medici) {
-			int i = 0;
-			if (check.equals(m.getNome())) {
-				System.out.println(check + " " + m.getCognome());
-				for (GiornoLavorativo g : medici.get(i).getGiorniLavorativi()) {
-					System.out.println(g);
-					s.add(g);
-				}
-			}
-			System.out.println("\n");
-		}
-		return s;
+	public void stampaOrari(String check) {
+		
+		medici.stream()
+			  .filter(m -> m.getNome().equalsIgnoreCase(check))
+			  .map(Medico::getId)
+			  .forEach(id -> stampaOrari(id));
 	}
 
 	// check = anno di laurea
-	public ArrayList<GiornoLavorativo> stampaOrari(GregorianCalendar check) {
-		ArrayList<GiornoLavorativo> s = new ArrayList<GiornoLavorativo>();
-		for (Medico m : medici) {
-			int i = 0;
-			// il +1 serve perche check.year viene decrementato di uno per
-			// qualche strano motivo
-			if (check.get(Calendar.YEAR) + 1 == (m.getAnnoLaurea().get(Calendar.YEAR))) {
-				for (GiornoLavorativo g : medici.get(i).getGiorniLavorativi()) {
-					System.out.println(g);
-					s.add(g);
-				}
-			}
-			System.out.println("\n");
-		}
-		return s;
+	public void stampaOrari(GregorianCalendar check) {
+		
+		medici.stream()
+		      .filter(m -> check.get(Calendar.YEAR) + 1 == (m.getAnnoLaurea().get(Calendar.YEAR)))
+		      .map(Medico::getId)
+		      .forEach(id -> stampaOrari(id));
+
 	}
 
 	// Stampa tutti gli appuntamenti del Medico Inserito
@@ -98,25 +86,44 @@ public class Clinica implements Interfaccia {
 	}
 
 	public ArrayList<Appuntamento> stampaAppuntamenti(GregorianCalendar data) {
-		// Non funziona
-		GregorianCalendar min = new GregorianCalendar();
-		GregorianCalendar max = new GregorianCalendar();
-		min = data;
-		max = data;
+//		// Non funziona
+//		GregorianCalendar min = new GregorianCalendar();
+//		GregorianCalendar max = new GregorianCalendar();
+//		min = data;
+//		max = data;
+//		min.set(Calendar.HOUR, 0);
+//		min.set(Calendar.MINUTE, 0);
+//		max.set(Calendar.HOUR, 23);
+//		max.set(Calendar.MINUTE, 59);
+//
+//		ArrayList<Appuntamento> app = new ArrayList<>();
+//		for (Appuntamento a : appuntamenti.getAppuntamenti()) {
+//			if (a.getData().compareTo(min) >= 0 && a.getData().compareTo(max) <= 0) {
+//				System.out.println(a);
+//				app.add(a);
+//			}
+//		}
+//
+//		return app;
+		
+		GregorianCalendar min = (GregorianCalendar) data.clone();
+		GregorianCalendar max = (GregorianCalendar) data.clone();
+		
 		min.set(Calendar.HOUR, 0);
 		min.set(Calendar.MINUTE, 0);
 		max.set(Calendar.HOUR, 23);
 		max.set(Calendar.MINUTE, 59);
-
-		ArrayList<Appuntamento> app = new ArrayList<>();
-		for (Appuntamento a : appuntamenti.getAppuntamenti()) {
-			if (a.getData().compareTo(min) >= 0 && a.getData().compareTo(max) <= 0) {
-				System.out.println(a);
-				app.add(a);
-			}
-		}
-
+		
+		ArrayList<Appuntamento> app = (ArrayList<Appuntamento>) appuntamenti.getAppuntamenti()
+				    .stream()
+				    .filter(d -> d.getData().compareTo(min) >= 0)
+				    .filter(d -> d.getData().compareTo(max) <= 0)
+				    .collect(Collectors.toList());
+		
+		app.forEach(System.out::println);
+		
 		return app;
+									
 
 	}
 
@@ -174,7 +181,6 @@ public class Clinica implements Interfaccia {
 		
 		Medico m = new Medico(nome, cognome, annoLaurea, annoAssunzione);
 
-//    	ArrayList<GiorniSettimana> giorni = (ArrayList<GiorniSettimana>) Arrays.asList(GiorniSettimana.values());
     	ArrayList<GiorniSettimana> giorni= new ArrayList <>();
     	giorni.add(GiorniSettimana.LUN);
     	giorni.add(GiorniSettimana.MAR);
@@ -184,12 +190,13 @@ public class Clinica implements Interfaccia {
     	giorni.add(GiorniSettimana.SAB);
     	giorni.add(GiorniSettimana.DOM);
 		GiornoLavorativo[] gLav = new GiornoLavorativo[7];
-		Ora o1 = new Ora(InputDati.leggiIntero("Inserisci orario inizio mattino", 6, 9), 0);
-		Ora o2 = new Ora(InputDati.leggiIntero("Inserisci orario inizio pausa pranzo", 11, 13), 0);
-		Ora o3 = new Ora(InputDati.leggiIntero("Inserisci orario fine pausa pranzo", o2.getOra()+1, o2.getOra()+2), 0);
-		Ora o4 = new Ora(InputDati.leggiIntero("Inserisci orario fine turno", 17, 21), 0);
+		Ora o1 = new Ora(InputDati.leggiIntero("Inserisci orario inizio mattino: ", 6, 9), 0);
+		Ora o2 = new Ora(InputDati.leggiIntero("Inserisci orario inizio pausa pranzo: ", 11, 13), 0);
+		Ora o3 = new Ora(InputDati.leggiIntero("Inserisci orario fine pausa pranzo: ", o2.getOra()+1, o2.getOra()+2), 0);
+		Ora o4 = new Ora(InputDati.leggiIntero("Inserisci orario fine turno: ", 17, 21), 0);
 		for (int i = 0; i < gLav.length; i++) {
-			GiornoLavorativo g = new GiornoLavorativo(true, o1, o2, o3, o4, giorni.get(i));
+			boolean lavoro= InputDati.leggiUpperChar("Il " + giorni.get(i) + " lavori [S,N]? ","SN") == 'S' ? true : false;
+			GiornoLavorativo g = new GiornoLavorativo(lavoro, o1, o2, o3, o4, giorni.get(i));
 			gLav[i] = g;
 		}
 
@@ -393,9 +400,9 @@ public class Clinica implements Interfaccia {
 	 * sarebbe il tempo che l'utente seleziona un opzione del menu
 	 * (vedi main per capire meglio)
 	 */
-	public void printTime() {
+	public void printTime(ArrayList<Integer> log) {
 		for(int i=0; i<timestamps.size(); i+=2) {
-			System.out.println(diffDouble(timestamps.get(i+1), timestamps.get(i)));
+			System.out.println("Opzione: " + log.get(i)+ " - " + diffDouble(timestamps.get(i+1), timestamps.get(i)) + " ms");
 		}
 
 
