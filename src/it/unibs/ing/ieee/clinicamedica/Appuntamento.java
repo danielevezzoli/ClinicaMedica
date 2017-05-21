@@ -62,7 +62,7 @@ public class Appuntamento implements Comparable<Appuntamento>{
 
 	@Override
 	public String toString() {
-		return String.format("ID: %d%nMedico: %s %nPaziente: %s%nOrario: %s/%s/%s - %s:%s%n%d",id, medico.getNome() + " " + medico.getCognome(),
+		return String.format("ID: %d%nMedico: %s %nPaziente: %s%nOrario: %s/%s/%s - %s:%s%nPriorità:%d%n",id, medico.getNome() + " " + medico.getCognome(),
 				paziente.getNome() + " " + paziente.getCognome(),
 				data.get(Calendar.DAY_OF_MONTH) , data.get(Calendar.MONTH) , data.get(Calendar.YEAR) 
 						, data.get(Calendar.HOUR_OF_DAY) , data.get(Calendar.MINUTE),priorita);

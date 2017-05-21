@@ -77,9 +77,17 @@ public class Clinica implements Interfaccia {
 	public ArrayList<Appuntamento> stampaAppuntamenti(int matricola) {
 		ArrayList<Appuntamento> app = new ArrayList<>(appuntamenti.stampaAppuntamentiDatoMedico(matricola));
 		Collections.sort(app);
-		for (Appuntamento b : app) {
-			System.out.println(b);
+		if (app.size()<=0)
+		{
+			System.out.println("Il medico inserito non è presente nell'elenco");
 		}
+		else
+		{
+			for (Appuntamento b : app) {
+				System.out.println(b);
+			}
+		}
+		
 
 		return app;
 
@@ -160,9 +168,24 @@ public class Clinica implements Interfaccia {
 
 	@Override
 	public String stampaNumAppuntamenti(int matricola) {
-		String str = String.valueOf(appuntamenti.numAppuntamentiDatoMedico(matricola));
-		System.out.println("Il dottor " + cercaMedicoDaId(matricola).getNome() + " "
-				+ cercaMedicoDaId(matricola).getCognome() + " ha " + str + " Appuntamenti");
+		boolean presente=false;
+		for (Medico medico : medici) {
+			if (medico.getId()==matricola)
+				presente=true;
+		}
+		String str;
+		if (presente)
+		{
+			str = String.valueOf(appuntamenti.numAppuntamentiDatoMedico(matricola));
+			System.out.println("Il dottor " + cercaMedicoDaId(matricola).getNome() + " "
+					+ cercaMedicoDaId(matricola).getCognome() + " ha " + str + " Appuntamenti");		
+		}
+		else
+		{
+			System.out.println("Il medico inserito non è presente nell'elenco");
+			str=null;
+		}
+		
 		return str;
 	}
 

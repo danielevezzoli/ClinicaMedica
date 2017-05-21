@@ -11,12 +11,12 @@ public class MainClass {
 	public static void main(String[] args) {
 		Clinica clinica = new Clinica();
 		boolean esci = false;
-		final String[] vociMenu = { "Stampa tutti i pazienti", "Stampare lista pazienti con un appuntamento",
-				"Stampa orario medico", "Stampare gli appuntamenti per giorno", "Prenota appuntamento",
-				"Rimuovi appuntamento", "Aggiungi medico", "Aggiungi paziente", "Stampa medici", "Stampa appuntamenti",
-				"Stampa appuntamento per medico inserito", "Stampa appuntamenti per intervallo di date",
-				"Stampa numero appuntamenti per medico", "Stampa appuntamenti per paziente in ordine di urgenza",
-				"Stampa orario medico per anno laurea", "Stampa orario medico per id", "Stampa tempi" };
+		final String[] vociMenu = {"Aggiungi medico" , "Aggiungi paziente",
+				"Stampa tutti i pazienti", "Stampare lista pazienti con un appuntamento", "Stampa medici",
+				"Stampa orario medico per nome", "Stampa orario medico per anno laurea", "Stampa orario medico per id", 
+				"Prenota appuntamento", "Rimuovi appuntamento", "Stampa appuntamenti", "Stampare gli appuntamenti per giorno",
+				"Stampa appuntamenti per intervallo di date", "Stampa appuntamento per medico inserito",
+				"Stampa numero appuntamenti per medico inserito", "Stampa appuntamenti per paziente in ordine di urgenza", "Stampa tempi" };
 		MyMenu menu = new MyMenu("Clinica Medica", vociMenu);
 		ArrayList<Integer> log = new ArrayList<>();
 
@@ -37,87 +37,90 @@ public class MainClass {
 			switch (casoScelto) {
 			case 1:
 				clinica.getTime();
-				clinica.stampaPazienti();
+				clinica.addMedico();
 				clinica.getTime();
 				break;
 			case 2:
 				clinica.getTime();
-				clinica.ordinaPazientiPerNumeroAppuntamenti();
+				clinica.addPaziente();
 				clinica.getTime();
 				break;
 			case 3:
 				clinica.getTime();
-				clinica.stampaOrari(InputDati.leggiStringaNonVuota("Inserisci il nome del medico: "));
+				clinica.stampaPazienti();
 				clinica.getTime();
 				break;
 			case 4:
 				clinica.getTime();
-				clinica.stampaAppuntamenti(inserisciData(false));
+				clinica.ordinaPazientiPerNumeroAppuntamenti();
 				clinica.getTime();
 				break;
 			case 5:
 				clinica.getTime();
-				clinica.addAppuntamento();
+				clinica.stampaMedici();
 				clinica.getTime();
 				break;
 			case 6:
 				clinica.getTime();
-				clinica.rimuoviAppuntamento();
+				clinica.stampaOrari(InputDati.leggiStringaNonVuota("Inserisci il nome del medico: "));
 				clinica.getTime();
 				break;
 			case 7:
 				clinica.getTime();
-				clinica.addMedico();
+				clinica.stampaOrari(
+						new GregorianCalendar(InputDati.leggiInteroNonNegativo("Inserisci l'anno di laurea: "), 0, 0));
 				clinica.getTime();
 				break;
 			case 8:
 				clinica.getTime();
-				clinica.addPaziente();
+				clinica.stampaOrari(InputDati.leggiInteroNonNegativo("Inserisci l'id del medico: "));
 				clinica.getTime();
 				break;
 			case 9:
 				clinica.getTime();
-				clinica.stampaMedici();
+				clinica.addAppuntamento();
 				clinica.getTime();
 				break;
 			case 10:
 				clinica.getTime();
-				clinica.stampaAppuntamenti();
+				clinica.rimuoviAppuntamento();
 				clinica.getTime();
 				break;
 			case 11:
+				clinica.getTime();
+				clinica.stampaAppuntamenti();
+				clinica.getTime();
+				break;
+			
+			case 12:
+				clinica.getTime();
+				clinica.stampaAppuntamenti(inserisciData(false));
+				clinica.getTime();
+				break;
+			case 13:
+				clinica.getTime();
+				clinica.stampaAppuntamenti(inserisciData(true), inserisciData(true));
+				clinica.getTime();
+				break;
+			case 14:
 				clinica.getTime();
 				clinica.stampaAppuntamenti(
 						clinica.cercaIdDatoNomeCognome(InputDati.leggiStringaNonVuota("Inserisci il nome del medico: "),
 								InputDati.leggiStringaNonVuota("Inserisci il cognome del medico: ")));
 				clinica.getTime();
 				break;
-			case 12:
-				clinica.getTime();
-				clinica.stampaAppuntamenti(inserisciData(true), inserisciData(true));
-				clinica.getTime();
-				break;
-			case 13:
-				clinica.getTime();
-				clinica.stampaNumAppuntamenti(InputDati.leggiInteroNonNegativo("Inserisci l'id del medico: "));
-				clinica.getTime();
-				break;
-			case 14:
-				clinica.getTime();
-				clinica.stampaAppuntamentiPazientePerUrgenza(InputDati.leggiInteroNonNegativo("Inserisci l'id del paziente: "));
-				clinica.getTime();
-				break;
 			case 15:
 				clinica.getTime();
-				clinica.stampaOrari(
-						new GregorianCalendar(InputDati.leggiInteroNonNegativo("Inserisci l'anno di laurea: "), 0, 0));
+				clinica.stampaNumAppuntamenti(clinica.cercaIdDatoNomeCognome(InputDati.leggiStringaNonVuota("Inserisci il nome del medico: "),
+						InputDati.leggiStringaNonVuota("Inserisci il cognome del medico: ")));
 				clinica.getTime();
 				break;
 			case 16:
 				clinica.getTime();
-				clinica.stampaOrari(InputDati.leggiInteroNonNegativo("Inserisci l'id del medico: "));
+				clinica.stampaAppuntamentiPazientePerUrgenza(InputDati.leggiInteroNonNegativo("Inserisci l'id del paziente: "));
 				clinica.getTime();
 				break;
+			
 			case 17:
 				clinica.printTime(log);
 			default:
