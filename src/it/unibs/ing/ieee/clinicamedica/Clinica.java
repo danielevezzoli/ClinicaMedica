@@ -171,14 +171,23 @@ public class Clinica implements Interfaccia {
 		int giornoA = InputDati.leggiInteroNonNegativo("Giorno assunzione: ");
 		GregorianCalendar annoAssunzione = new GregorianCalendar(annoA, meseA, giornoA);
 
+		
 		Medico m = new Medico(nome, cognome, annoLaurea, annoAssunzione);
 
-		ArrayList<GiorniSettimana> giorni = (ArrayList<GiorniSettimana>) Arrays.asList(GiorniSettimana.values());
+//    	ArrayList<GiorniSettimana> giorni = (ArrayList<GiorniSettimana>) Arrays.asList(GiorniSettimana.values());
+    	ArrayList<GiorniSettimana> giorni= new ArrayList <>();
+    	giorni.add(GiorniSettimana.LUN);
+    	giorni.add(GiorniSettimana.MAR);
+    	giorni.add(GiorniSettimana.MER);
+    	giorni.add(GiorniSettimana.GIO);
+    	giorni.add(GiorniSettimana.VEN);
+    	giorni.add(GiorniSettimana.SAB);
+    	giorni.add(GiorniSettimana.DOM);
 		GiornoLavorativo[] gLav = new GiornoLavorativo[7];
-		Ora o1 = new Ora(10, 0);
-		Ora o2 = new Ora(12, 0);
-		Ora o3 = new Ora(14, 0);
-		Ora o4 = new Ora(20, 0);
+		Ora o1 = new Ora(InputDati.leggiIntero("Inserisci orario inizio mattino", 6, 9), 0);
+		Ora o2 = new Ora(InputDati.leggiIntero("Inserisci orario inizio pausa pranzo", 11, 13), 0);
+		Ora o3 = new Ora(InputDati.leggiIntero("Inserisci orario fine pausa pranzo", o2.getOra()+1, o2.getOra()+2), 0);
+		Ora o4 = new Ora(InputDati.leggiIntero("Inserisci orario fine turno", 17, 21), 0);
 		for (int i = 0; i < gLav.length; i++) {
 			GiornoLavorativo g = new GiornoLavorativo(true, o1, o2, o3, o4, giorni.get(i));
 			gLav[i] = g;
@@ -261,10 +270,28 @@ public class Clinica implements Interfaccia {
 			System.out.println("Il paziente è morto, non puoi prenotare un appuntamento :(");
 			return;
 		}
+		
+		Calendar now = Calendar.getInstance();
+		boolean ciclo=true;
 
-		int annoA = InputDati.leggiInteroNonNegativo("Anno appuntamento: ");
-		int meseA = InputDati.leggiInteroNonNegativo("Mese appuntamento: ");
-		int giornoA = InputDati.leggiInteroNonNegativo("Giorno appuntamento: ");
+		int annoA, meseA, giornoA;
+		do
+		{
+			annoA = InputDati.leggiInteroNonNegativo("Anno appuntamento: ");
+			meseA = InputDati.leggiInteroNonNegativo("Mese appuntamento: ");
+			giornoA = InputDati.leggiInteroNonNegativo("Giorno appuntamento: ");
+			GregorianCalendar confronto = new GregorianCalendar(annoA,meseA,giornoA);
+			if (confronto.compareTo(now)>=0 && giornoA>=now.get(Calendar.DAY_OF_MONTH))
+				ciclo=false;
+			else
+			{
+				System.out.println("Inserisci una data successiva ad oggi");
+			}
+		}
+		while (ciclo);
+
+	
+		
 
 		do {
 			int oraA = InputDati.leggiInteroNonNegativo("Ora appuntamento: ");
